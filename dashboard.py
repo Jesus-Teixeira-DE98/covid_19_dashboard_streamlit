@@ -26,7 +26,7 @@ def extract():
     database =  os.getenv('database')
     con = f'mysql+mysqlconnector://{username}:{password}@{host}:{port}/{database}'
     engine = create_engine(con)
-    data = pd.read_sql( 'select * from covid_19', engine)
+    data = pd.read_sql( 'select * from covid_19 where countries <> "korea-north"', engine)
     return data
 
 def transform(data):
@@ -47,9 +47,8 @@ def transform(data):
     return data, df2
 
 def transform(data):
-    data['fatality_rate'] = data['total_deaths']/data['total_confirmed'] * 100 ## calculatting 
+    data['fatality_rate'] = data['total_deaths']/data['total_confirmed'] ## calculatting 
     data['countries']     = data['countries'].apply(lambda x: x.replace('-', ' '))
-    # getting iso countries
     country_dict = {country.alpha_3: country.name.lower() for country in pycountry.countries}
     df = pd.DataFrame.from_dict(country_dict, orient='index', columns=['country_name'])
     df = df.reset_index()
@@ -84,14 +83,14 @@ def dashboard(data, df2):
 
     with tab1:
         st.title('Project Details')
-        st.header('Objetivos')
-        st.markdown('abc')
+        st.header('Goals')
+        st.markdown('Design and develop a comprehensive COVID-19 data extraction system, perform thorough data cleaning processes, and deliver the cleaned data through an intuitive and interactive dashboard.')
         st.markdown("<br>", unsafe_allow_html=True)
         st.header('Data Source')
-        st.markdown('abc')
+        st.markdown('https://api.covid19api.com/summary')
         st.markdown("<br>", unsafe_allow_html=True)
         st.header('Data Processing')
-        st.markdown('abc')
+        st.markdown('The comprehensive data processing workflow encompasses the following steps: extracting and ingesting the data into a mySQL database using SQLalchemy, collecting and cleaning the data utilizing pandas, creating intricate charts and conducting in-depth analysis with plotly, and ultimately developing an interactive and visually appealing dashboard through Streamlit to showcase the processed data.')
         st.markdown("<br>", unsafe_allow_html=True)
         st.markdown("""---""") 
         st.header('Database')
@@ -116,9 +115,9 @@ def dashboard(data, df2):
         # Total Deaths
         total_death = data_raw1['total_deaths'].sum()
         # global fatality rate
-        global_fatality_rate = round((total_death/total_cases), 4)
+        global_fatality_rate = round((total_death/total_cases), 4) * 100
         # Avg per country  
-        avg_fatality_rate = round(data_raw1['fatality_rate'].mean(), 2)
+        avg_fatality_rate = round(data_raw1['fatality_rate'].mean(), 2) * 100
         st.markdown("""---""")
         st.header('Total Cases, Deaths and Rate')
         st.write("")  
@@ -136,7 +135,7 @@ def dashboard(data, df2):
         with col3:
             st.metric(label="Global Fatality Rate", value=f'{global_fatality_rate:.2f}%')
         with col4:
-            st.metric(label="Avarage Fatality Rate", value=avg_fatality_rate )
+            st.metric(label="Avarage Fatality Rate per Country", value=f'{avg_fatality_rate:.2f}%' )
 
         st.markdown("""---""")
         st.header('Top 10 Countries')
@@ -170,7 +169,7 @@ def dashboard(data, df2):
         ax3 = ax3.loc[:9]
         fig3 = px.bar(ax3, x='countries' ,y='fatality_rate', title="Top 10 countries with the highest fatality rate:", 
                     text_auto=True, labels={'fatality_rate' : 'fatality rate'}, color_discrete_sequence=new_colors)
-        fig3.update_traces(texttemplate='%{y:.2s}', textposition='outside', 
+        fig3.update_traces(texttemplate='%{y:.2%}', textposition='outside', 
                         textfont=dict(size=14, family='Arial', color='white'))
         fig3.update_xaxes(title_font=dict(size=16, family='Arial', color='white'))
         fig3.update_yaxes(title_font=dict(size=16, family='Arial', color='white'))
@@ -206,7 +205,7 @@ def dashboard(data, df2):
         st.header('Database')
         st.markdown("The dataset is a comprehensive collection of COVID-19 data, containing information on cases, deaths, and other relevant metrics across different countries and regions. It provides valuable insights into the spread and impact of the pandemic. The dataset is available for download, allowing users to access and analyze the data for further research or analysis. Simply click the button below to initiate the download process and gain access to this valuable resource.")
         st.markdown("<br>", unsafe_allow_html=True)
-        st.dataframe(data_raw1, use_container_width=True )
+        st.dataframe(data_raw1, use_container_width=True)
         file = data_raw1.to_csv().encode('utf-8')
         st.download_button(
                             label="Download covid data as CSV",
