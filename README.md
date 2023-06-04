@@ -36,3 +36,62 @@ Global Insights company needs a dashboard to track the evolution of COVID-19 cas
 
 
 <br><br>
+
+## 2. Strategies to solve the problem
+<br><br>
+
+<p align='center'>
+    <img src = 'img/pipeline.png'>
+</p>
+<br>
+
+### 2.1. Data Extraction
+Using Python with the libraries pandas and request, extract data from covid 19 API.
+<br><br>
+
+### 2.2. Data ingestion
+After getting the databases ingest the data into the mySQL database using SQLAlchemy for that.
+<br><br>
+
+### 2.3. Calculate indicator and Build Dashboard
+Having the data stored in MySQL, take that and make all the necessary KPIs to show in the Dashboard. Build Dashboard framework with streamlit in python.
+<br><br>
+
+### 2.4. Deploy
+Show indicators on a website powered by streamlit.
+<br><br>
+
+## 3. Dashboard
+<br><br>
+
+<p align='center'>
+    <img src = 'img/dashboard1.png'>
+</p>
+<br>
+
+<p align='center'>
+    <img src = 'img/dashboard2.png'>
+</p>
+<br>
+
+<p align='center'>
+    <img src = 'img/dashboard3.png'>
+</p>
+<br>
+
+## 4. Python Libraries
+pandas, requests, inflection, os, dotenv, SQLAlchemy, streamlit, plotly e pycountry.
+<br><br>
+
+## 5. Lessons Learned
+- How to extract Data from an public api;
+- How to combine os and dotenv to not expose password and sensitive information;
+- Building a Dashboard entirely with python.
+<br><br>
+
+## 6. Next Steps
+- Data ingested into a database that is in a cloud;
+- Modularize and split functions for even cleaner code;
+- Orquestation data pipeline using AirFlow;
+- Deploy the solution.
+<br><br>
